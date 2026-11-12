@@ -1,0 +1,62 @@
+---
+title: "01_linear_regression"
+author: "Shiyu KANG"
+date: "2026-11-12"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(p8105.datasets)
+```
+
+
+```{r}
+data("nyc_airbnb")
+
+nyc_airbnb = nyc_airbnb |>
+  mutate(
+    stars = review_scores_location / 2
+  ) |>
+  rename(
+    borough = neighbourhood_group,
+    neighborhood = neighbourhood
+  ) |>
+  filter(
+    borough != "Staten Island"
+  ) |>
+  select(price, stars, borough, neighborhood, room_type)
+```
+
+Fit a linear regression
+
+```{r}
+fit = lm(price ~ stars + borough, data = nyc_airbnb)
+```
+
+Look at what we have
+
+```{r}
+fit
+summary(fit)
+coef(fit)
+fitted.values(fit)
+resid(fit)
+
+
+names(fit)
+names(summary(fit))
+```
+
+let's do better
+
+```{r}
+broom::tidy(fit) |>
+  select(-std.error) |>
+  knitr::kable(digits = 3) 
+
+broom::glance(fit)
+```
+
